@@ -1,0 +1,7 @@
+bin/
+build/
+.cproject
+.project
+.settings/
+*.launch
+*.zip
