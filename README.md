@@ -1,5 +1,22 @@
 # Overview:
-This repository features a bare-metal I2C driver and application code written in C for the STM32L476 (Nucleo-L476RG). It communicates with a BMP390 pressure/temperature sensor without reliance of HAL or vendor abstraction layers. All peripherals are configured directly from the STM32L4xx Reference Manual (RM0351). The goal is to demonstrate proficiency in low-level embedded C programming fundamentals, hardware interfacing, and reliable driver design. This project is under active development, with additional sensor features and data processing planned.
+This repository features a bare-metal I2C driver and application code written in C for the STM32L476 (Nucleo-L476RG). It communicates with a BMP390 pressure/temperature sensor without any HAL reliance. All peripherals are configured directly from the STM32L4xx Reference Manual (RM0351). The project demonstrates low-level embedded C programming fundamentals, hardware register interfacing, timing behavior, I2C communication, UART data print-out, floating-point sensor compensation, and reliable code design. The goal is to control the hardware at every step and develop a strong foundation in embedded systems and firmware development. 
+
+
+## Features: 🔧
+- Direct register-level peripheral configuration (no HAL/LL libraries).
+- I2C driver supporting multi-byte read & write operations.
+- BMP390 sensor driver includes:
+  - Raw pressure & temperature, and calibration coefficient capture.
+  - Bosch fixed-point → floating-point conversions. 
+- USART2 text output (integer and float printing).
+- Simple LED indication for success/failure states.
+
+
+## Demonstration: 🎥
+Live video presentation of temp + pressure readings:
+
+YouTube Link: https://youtu.be/KMbyM4Ony0o?si=7weaQ0JydmJHaIW2
+
 
 ## Hardware Requirements: 🧰
 - **MCU:** Nucleo-L476RG (STM32L476RG).
@@ -23,12 +40,14 @@ This repository features a bare-metal I2C driver and application code written in
     ├── drivers
     │   ├── bmp390.c
     │   ├── i2c.c
+    │   ├── usart.c
     │   ├── utils.c
     │   └── peripherals.c
     ├── inc
     │   ├── bmp390.h
     │   ├── i2c.h
     │   ├── peripherals.h
+    │   ├── usart.h
     │   ├── utils.h
     │   └── stm32l476.h
     ├── linker.ld
@@ -42,5 +61,5 @@ This repository features a bare-metal I2C driver and application code written in
 
 ## Contributions: 👤
 - **Author:** Michael Fraczek
-- Open to collaboration feedback!
+- Open to collaboration & feedback!
 
