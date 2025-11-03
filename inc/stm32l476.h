@@ -19,7 +19,10 @@
 #define TIM2_ARR      (*(volatile uint32_t*)0x4000002C) // TIM2 auto-reload 
 
 #define GPIOA_MODER   (*(volatile uint32_t*)0x48000000) // GPIOA mode
+#define GPIOA_OTYPER  (*(volatile uint32_t*)0x48000004) // GPIOA Type - Open drain vs push/pull 
 #define GPIOA_ODR     (*(volatile uint32_t*)0x48000014) // GPIOA output data
+#define GPIOA_AFRL    (*(volatile uint32_t*)0x48000020) // GPIOA alternate function LO
+#define GPIOA_PUPDR   (*(volatile uint32_t*)0x4800000C) // GPIOA pull up/down
 
 #define GPIOB_MODER   (*(volatile uint32_t*)0x48000400) // GPIOB base address/mode
 #define GPIOB_OTYPER  (*(volatile uint32_t*)0x48000404) // Type - Open drain vs push/pull
@@ -37,5 +40,11 @@
 #define I2C1_ICR      (*(volatile uint32_t*)0x4000541C) // I2C1 flag clearing register
 #define I2C1_RXDR     (*(volatile uint32_t*)0x40005424) // I2C1 receive data register
 #define I2C1_TXDR     (*(volatile uint32_t*)0x40005428) // I2C1 transmit data register
+
+#define USART2_CR1    (*(volatile uint32_t*)0x40004400) 
+#define USART2_CR2    (*(volatile uint32_t*)0x40004404) 
+#define USART2_BRR    (*(volatile uint32_t*)0x4000440C)
+#define USART2_ISR    (*(volatile uint32_t*)0x4000441C) 
+#define USART2_TDR    (*(volatile uint32_t*)0x40004428) 
 
 #endif
