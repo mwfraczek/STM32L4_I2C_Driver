@@ -6,53 +6,67 @@
 #include "bmp390.h"
 #include "utils.h"
 
-// Setup USART peripheral
+// Setup USART2 peripheral
 void usart2_init(void) { 
 	USART2_CR1 &= ~(1 << 12); // M0 word length
 	USART2_CR1 &= ~(1 << 28); // M1 word length (8-bit word length)
 	USART2_CR2 &= ~(3 << 12); // STOP bits (n = 0)
-	USART2_BRR  = 0x0683;     // Baud rate = 9600 (fCK / baud)
+	USART2_BRR  = 0x0683;     // Baud rate = 9600 (fCK / baud) 0x0683
 	USART2_CR1 |=  (1 << 3);  // Transmitter enable (TE)
 	USART2_CR1 |=  (1 << 0);  // USART enable (UE)
 }
 
-// General Write Function
-void usart2_write(uint8_t data) {
+// Setup USART3 periperhal
+void usart3_init(void) { 
+        USART3_CR1 &= ~(1 << 12); // M0 word length
+        USART3_CR1 &= ~(1 << 28); // M1 word length (8-bit word length)
+        USART3_CR2 &= ~(3 << 12); // STOP bits (n = 0)
+        USART3_BRR  = 0x0683;     // Baud rate = 9600 (fCK / baud) 0x0683
+        USART3_CR1 |=  (1 << 2);  // Receiver enable (RE)
+        USART3_CR1 |=  (1 << 0);  // USART enable (UE)
+}
+
+// General TX Function
+void usart2_transmit(uint8_t data) {
 	while (!(USART2_ISR & (1 << 7))); // Wait for empty transmit data register (TXE)
 	USART2_TDR = data;
 }
 
-// String Output
-void usart2_write_str(const char *s) {
-	while (*s) {
-		usart2_write(*s++);
-	}
-}
+// Transmit integer data (helper)
+void usart2_transmitint(int value) {
+	char buf[12];  
+	size_t i = 0;
 
-// Integer Output
-void usart2_write_int(int value) {
-	char buffer[12];
-	unsigned int i = 0;
-
-	if (value < 0) {
-		usart2_write('-');
-		value = -value;
+	// Handle 0 explicitly
+	if (value == 0) {
+		usart2_transmit('0');
+		return;
 	}
 
-	while (value > 0 && i < sizeof(buffer)-1) {
-		buffer[i++] = (value % 10) + '0';
+	// Convert digits to characters in reverse
+	while (value > 0 && i < sizeof(buf) - 1) {
+		buf[i++] = (value % 10) + '0';
 		value /= 10;
 	}
 
-	while (i > 0) {
-		usart2_write(buffer[--i]);
+	// Send digits in correct order
+	while (i--) {
+		usart2_transmit(buf[i]);
 	}
 }
 
-// Float Output
-void usart2_write_float(float value, int decimals) {
+
+// Transmit string data (helper)
+void usart2_transmitstr(const char *s) {
+    while (*s) {
+        usart2_transmit(*s++);
+    }
+}
+
+// Transmit float data (helper)
+void usart2_transmitfloat(float value, int decimals) {
 	if (value < 0) {
-		usart2_write('-');
+		usart2_transmit('-');
 		value = -value;
 	}
 	int whole = (int)value;
@@ -64,27 +78,16 @@ void usart2_write_float(float value, int decimals) {
 	}
 	int frac = (int)frac_part;
 
-	usart2_write_int(whole);
-	usart2_write('.');
+	usart2_transmitint(whole);
+	usart2_transmit('.');
 
 	// ensure leading zeros in fractional part
 	int div = 1;
 	for (int i = 1; i < decimals; i++)
 		div *= 10;
 	while (frac < div) {
-		usart2_write('0');
+		usart2_transmit('0');
 		div /= 10;
 	}
-	usart2_write_int(frac);
-}
-
-// Print BMP390 Temperature & Pressure Readings
-void print_bmp390_readings(float temp, float press) {
-	usart2_write_str("Temp (C): ");
-	usart2_write_float(temp, 2);
-	usart2_write_str("\r\n");
-
-	usart2_write_str("Pressure (Pa): ");
-	usart2_write_float(press, 2);
-	usart2_write_str("\r\n\r\n");
+	usart2_transmitint(frac);
 }
