@@ -1,28 +1,38 @@
 # Overview:
-This repository features a bare-metal I2C driver and application code written in C for the STM32L476 (Nucleo-L476RG). It communicates with a BMP390 pressure/temperature sensor without any HAL reliance. All peripherals are configured directly from the STM32L4xx Reference Manual (RM0351). The project demonstrates low-level embedded C programming fundamentals, hardware register interfacing, timing behavior, I2C communication, UART data print-out, floating-point sensor compensation, and reliable code design. The goal is to control the hardware at every step and develop a strong foundation in embedded systems and firmware development. 
+This project contains embedded C firmware for the STM32L476 (Nucleo-L476RG), interfacing with a BMP390 pressure/temperature sensor and a GT-U7 GPS module. All peripherals are configured directly from the STM32L4 Reference Manual (RM0351), with no reliance on vendor HAL. The goal is to continuously expand functionality through hardware-level control, and to build a strong foundation in embedded systems and firmware development.
 
 
 ## Features: 🔧
-- Direct register-level peripheral configuration (no HAL/LL libraries).
-- I2C driver supporting multi-byte read & write operations.
-- BMP390 sensor driver includes:
-  - Raw pressure & temperature, and calibration coefficient capture.
-  - Bosch fixed-point → floating-point conversions. 
-- USART2 text output (integer and float printing).
-- Simple LED indication for success/failure states.
+- Register-level control of GPIO, I2C, UART, TIM, RCC peripherals. 
+- I2C driver for BMP390 pressure/temperature sensor.
+- UART drivers for GPS input (USART3) and serial output (USART2).
+- Floating-point conversion of BMP390 raw sensor data. 
+- NMEA sentence filtering (GPRMC) from GPS module. 
+- LED indicator for system status and timing reference. 
 
 
 ## Demonstration: 🎥
-Live video presentation of temp + pressure readings:
+**BMP390 sensor data output:** 
+- https://youtu.be/KMbyM4Ony0o?si=7weaQ0JydmJHaIW2
+**GPS module addition and data stream:** 
+- https://youtu.be/wnoSNGjvu-4?si=5N056fnCtZTQxa17
 
-YouTube Link: https://youtu.be/KMbyM4Ony0o?si=7weaQ0JydmJHaIW2
+
+## Future Work: 
+**Short Term:** 
+- Parse NMEA sentences to pull time, longitude, latitude, and altitude.
+- Develop Python script for serial data logging. 
+- Implement hardware interrupt handling.
+**Long Term:** 
+- Integrate BMI088 IMU via SPI.
+- Expand logging format for SD card storage. 
 
 
 ## Hardware Requirements: 🧰
 - **MCU:** Nucleo-L476RG (STM32L476RG).
-- **Sensor:** BMP390 Breakout Board - Adafruit or Amazon variants have both been tested and verified to work.
-- **Pull-ups:** 2.2kOhm on SCL and SDA. Ideal communication and waveform results may vary dependent on your hardware setup and capacitance characteristics.
-- **Power:** PC supplied USB-power to Nucleo board. Nucleo board supplied 3.3V VDD to sensor.
+- **Device:** BMP390 Breakout Board & GT-U7 GPS Module
+- **Pull-ups:** 2.2kOhm on I2C SCL and SDA lines.
+- **Power:** PC supplied USB-power to Nucleo board. Nucleo board supplied 3.3V VDD to devices.
 - **Configuration:** SDO tied to GND (slave addr: 0x76). CSB tied to 3.3V (I2C Interface Selection).   
 
 
