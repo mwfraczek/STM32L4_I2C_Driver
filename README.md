@@ -14,15 +14,17 @@ This project contains embedded C firmware for the STM32L476 (Nucleo-L476RG), int
 ## Demonstration: 🎥
 **BMP390 sensor data output:** 
 - https://youtu.be/KMbyM4Ony0o?si=7weaQ0JydmJHaIW2
+
 **GPS module addition and data stream:** 
 - https://youtu.be/wnoSNGjvu-4?si=5N056fnCtZTQxa17
 
 
-## Future Work: 
+## Future Work: 🚧
 **Short Term:** 
 - Parse NMEA sentences to pull time, longitude, latitude, and altitude.
 - Develop Python script for serial data logging. 
 - Implement hardware interrupt handling.
+
 **Long Term:** 
 - Integrate BMI088 IMU via SPI.
 - Expand logging format for SD card storage. 
