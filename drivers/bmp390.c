@@ -5,7 +5,7 @@
 #include "peripherals.h"
 #include "bmp390.h"
 #include "utils.h"
-
+#include "usart.h"
 
 // Configuration Function 
 int bmp390_setup(void) {
@@ -149,4 +149,15 @@ float bmp390_pressure(uint32_t raw_press, bmp_par_t *p) {
 	comp_press = partial_out1 + partial_out2 + partial_data4;
 
 	return comp_press;
+}
+
+// Output BMP390 Temperature & Pressure Readings
+void print_bmp390(float temp, float press) {
+	usart2_transmitstr("Temp (C): ");
+	usart2_transmitfloat(temp, 2);
+	usart2_transmitstr("\r\n");
+
+	usart2_transmitstr("Pressure (Pa): ");
+	usart2_transmitfloat(press, 2);
+	usart2_transmitstr("\r\n");
 }

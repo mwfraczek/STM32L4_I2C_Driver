@@ -41,10 +41,20 @@
 #define I2C1_RXDR     (*(volatile uint32_t*)0x40005424) // I2C1 receive data register
 #define I2C1_TXDR     (*(volatile uint32_t*)0x40005428) // I2C1 transmit data register
 
-#define USART2_CR1    (*(volatile uint32_t*)0x40004400) 
-#define USART2_CR2    (*(volatile uint32_t*)0x40004404) 
-#define USART2_BRR    (*(volatile uint32_t*)0x4000440C)
-#define USART2_ISR    (*(volatile uint32_t*)0x4000441C) 
-#define USART2_TDR    (*(volatile uint32_t*)0x40004428) 
+#define USART2_CR1    (*(volatile uint32_t*)0x40004400) // USART2 config register 
+#define USART2_CR2    (*(volatile uint32_t*)0x40004404) // USART2 config register
+#define USART2_BRR    (*(volatile uint32_t*)0x4000440C) // USART2 baud rate register
+#define USART2_ISR    (*(volatile uint32_t*)0x4000441C) // USART2 status register
+#define USART2_RDR    (*(volatile uint32_t*)0x40004424) // USART2 receive data register
+#define USART2_TDR    (*(volatile uint32_t*)0x40004428) // USART2 transmit data register
+
+#define USART3_CR1    (*(volatile uint32_t*)0x40004800) // USART3 config register
+#define USART3_CR2    (*(volatile uint32_t*)0x40004804) // USART3 config register
+#define USART3_BRR    (*(volatile uint32_t*)0x4000480C) // USART3 baud rate register
+#define USART3_RQR    (*(volatile uint32_t*)0x40004818) // USART3 request register
+#define USART3_ISR    (*(volatile uint32_t*)0x4000481C) // USART3 status register
+#define USART3_ICR    (*(volatile uint32_t*)0x40004820) // USART3 flag clear register
+#define USART3_RDR    (*(volatile uint32_t*)0x40004824) // USART3 receive data register
+#define USART3_TDR    (*(volatile uint32_t*)0x40004828) // USART3 transmit data register
 
 #endif

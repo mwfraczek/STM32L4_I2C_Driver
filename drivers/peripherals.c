@@ -8,7 +8,10 @@ void rcc_enable(void) {
 	RCC_APB1ENR1 |= (1 << 21); // Enable I2C1 clock
 	RCC_CCIPR    |= (1 << 12); // Select SYSCLK (HSI16) as I2C1 source clock
 	RCC_APB1ENR1 |= (1 << 0);  // Enable TIM2 clock
-	RCC_APB1ENR1 |= (1 << 17); // Enabel USART2 clock
+	RCC_APB1ENR1 |= (1 << 17); // Enable USART2 clock
+	RCC_CCIPR    |= (1 << 2);  // Select SYSCLK as USART2 clock	
+	RCC_APB1ENR1 |= (1 << 18); // Enable USART3 clock
+	RCC_CCIPR    |= (1 << 4);  // Select SYSCLK as USART3 clock
 }
 
 void gpio_config(void) {
@@ -29,17 +32,22 @@ void gpio_config(void) {
 	GPIOB_MODER &= ~(3 << 12);    // Clear PB6 bit
 	GPIOB_MODER |=  (1 << 12);    // Set PB6 to output mode
 	
-	// Set PA2/PA3 as AF pins for UART use case
-	GPIOA_MODER &= ~(3 << (2 * 2));
-	GPIOA_MODER |=  (2 << (2 * 2));
-	GPIOA_AFRL &= ~(0xF << (4 * 2));
-	GPIOA_AFRL |=  (7 << (4 * 2));
-	GPIOA_MODER &= ~(3 << (3 * 2));
-	GPIOA_MODER |=  (2 << (3 * 2));
-	GPIOA_AFRL &= ~(0xF << (4 * 3));
-	GPIOA_AFRL |=  (7 << (4 * 3));
-	GPIOA_OTYPER &= ~(1 << 2);  // Set PA2 to push-pull (default state)
-	GPIOA_PUPDR  &= ~(0xF < 4); // Set NO pull/up/downs  
+	// Set PA2 (TX) as AF7 for UART2 use case (serial console)
+	GPIOA_MODER &= ~(3 << 4);	// Clear PA2 bits
+	GPIOA_MODER |=  (2 << 4);	// Set PA2 to AF mode
+	GPIOA_AFRL &= ~(0xF << 8);	// Clear AF bits
+	GPIOA_AFRL |=  (7 << 8);	// Set PA2 to AF7 (USART2)
+	GPIOA_OTYPER &= ~(1 << 2);   	// Set PA2 to push-pull (default state)
+	GPIOA_PUPDR  &= ~(0xF << 4); 	// Set NO pull/up/downs  
+
+	// Set PB11 (RX) as AF7 for UART3 use case (GPS module)
+        GPIOB_MODER &= ~(3 << 22);	// Clear PB11 bits
+        GPIOB_MODER |=  (2 << 22); 	// Set PB11 to AF mode
+        GPIOB_AFRH &= ~(0xF << 12); 	// Clear AF bits
+        GPIOB_AFRH |=  (7 << 12); 	// Set PB11 to AF7 (USART3)
+        GPIOB_OTYPER &= ~(1 << 11); 	// Set PB11 to push-pull (default state)
+        GPIOB_PUPDR  &= ~(3 << 22); 	// Clear
+	GPIOB_PUPDR  |=  (1 << 22); 	// Set pull ups
 }
 
 void tim2_enable(void) {
