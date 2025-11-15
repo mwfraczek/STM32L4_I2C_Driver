@@ -1,3 +1,4 @@
+#include "stm32l476xx.h"
 #include "stm32l476.h"
 #include "peripherals.h"
 #include "utils.h"
@@ -7,7 +8,7 @@
 #include "gps.h"
 
 int main(void) {
-	// Variable declarations
+	// Variable Declarations
 	uint8_t bmpstatus;
 	volatile float temperature_c;
 	volatile float pressure_pa;
@@ -16,15 +17,25 @@ int main(void) {
 	bmp_par_t cal;		// converted coeffs
 	bmp_raw_t raw;		// raw readings
 
-	// Setup STM32 peripherals 
+	// Setup STM32 Peripherals 
 	rcc_enable();
 	gpio_config();
 	tim2_enable();
 	i2c1_init();
 	usart2_init();
 	usart3_init();
+	syscfg_enable();
+	exti_enable();
 
-	// Setup and wait for ready sensor 
+	// Interrupt Setup
+	NVIC_SetPriority(TIM2_IRQn, 4);
+	NVIC_EnableIRQ(TIM2_IRQn);  	// timer-base LED interrupt  
+	NVIC_SetPriority(USART3_IRQn, 3);
+	NVIC_EnableIRQ(USART3_IRQn);	// UART stream GPS interrupt
+	NVIC_SetPriority(EXTI9_5_IRQn, 2);
+	NVIC_EnableIRQ(EXTI9_5_IRQn);	// external sensor BMP390 interrupt
+
+	// Wait For Ready Sensor 
 	if (bmp390_setup() != 0) led_blink_fast();
 	do {
 		if (bmp390_status(&bmpstatus) != 0)
@@ -35,14 +46,21 @@ int main(void) {
 	bmp390_coeffdata(&cal_raw);
         bmp390_coeffconvert(&cal_raw, &cal);
 	
-	// Gather and output temp, pressure, GPS values via UART 
+	// Output Temp, Pressure, GPS Values via UART 
 	while (1) {
-		bmp390_rawdata(&raw);
-		gps_receive(gpsdata);
-	      	temperature_c = bmp390_temp(raw.raw_temperature, &cal);
-        	pressure_pa = bmp390_pressure(raw.raw_pressure, &cal);
-		print_bmp390(temperature_c, pressure_pa);
-		print_gps(gpsdata);
-		led_blink_slow();
+		// Pull raw data, convert, output
+		if (bmp_data_ready) {
+			bmp_data_ready = 0;
+			bmp390_rawdata(&raw);
+			temperature_c = bmp390_temp(raw.raw_temperature, &cal); 
+			pressure_pa = bmp390_pressure(raw.raw_pressure, &cal);
+			print_bmp390(temperature_c, pressure_pa);
+		}
+		// Print only 'GPRMC' NMEA sentences
+		if (gps_parse(gpsdata)) {
+			if (strncmp(gpsdata, "$GPRMC", 6) == 0) {
+				print_gps(gpsdata);
+			}
+		}
 	}
 }

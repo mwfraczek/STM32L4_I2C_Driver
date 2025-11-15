@@ -1,10 +1,14 @@
 #ifndef BMP390_H
 #define BMP390_H
 
+extern volatile uint8_t bmp_data_ready;
+
 // BMP390 Memory Address
 #define BMP_CHIPID_ADDR    0x00
 #define BMP_STATUS_ADDR    0x03
 #define BMP_DATA_ADDR      0x04 // 0x04-0x09
+#define BMP_INT_STATUS_ADDR 0x11  
+#define BMP_INT_CTRL_ADDR  0x19  
 #define BMP_PWRCTRL_ADDR   0x1B
 #define BMP_OSR_ADDR       0x1C
 #define BMP_ODR_ADDR       0x1D
@@ -62,5 +66,6 @@ void bmp390_coeffconvert(const bmp_coeff_t *c, bmp_par_t *p);
 float bmp390_temp(uint32_t raw_temp, bmp_par_t *p);
 float bmp390_pressure(uint32_t raw_press, bmp_par_t *p);
 void print_bmp390(float temp, float press);
+void EXTI9_5_IRQHandler(void);
 
 #endif

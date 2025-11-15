@@ -5,7 +5,7 @@ SHELL = /bin/sh
 CC = arm-none-eabi-gcc
 AS = arm-none-eabi-as
 OBJCOPY = arm-none-eabi-objcopy
-CFLAGS = -mcpu=cortex-m4 -mthumb -Wall -Wextra -nostdlib -Iinc -g
+CFLAGS = -mcpu=cortex-m4 -mthumb -Wall -Wextra -nostdlib -Iinc -Iinc/cmsis/core -Iinc/cmsis/device -g
 ASFLAGS = -mcpu=cortex-m4 -mthumb -g
 LDFLAGS = -Tlinker.ld
 

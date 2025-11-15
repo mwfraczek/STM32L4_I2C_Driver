@@ -10,8 +10,9 @@
 // Configuration Function 
 int bmp390_setup(void) {
 	uint8_t bmp_pwrctrl = 0x33; // Normal Mode - Temp/Pressure Enable
-	uint8_t bmp_osr = 0x00;	    // No Oversampling
-	uint8_t bmp_odr = 0x00;	    // 5ms Sampling Period
+	uint8_t bmp_osr = 0x00;	    // No oversampling
+	uint8_t bmp_odr = 0x08;	    // ~1 second sampling period
+	uint8_t bmp_intctrl = 0x42; // Enable data ready interrupt - INT active high
 
 	if (i2c1_write(BMP_SLAVE_ADDR, BMP_PWRCTRL_ADDR, &bmp_pwrctrl, 1, 1) != 0)
 		return -1; 
@@ -19,6 +20,8 @@ int bmp390_setup(void) {
 		return -1; 
         if (i2c1_write(BMP_SLAVE_ADDR, BMP_ODR_ADDR, &bmp_odr, 1, 1) != 0)
 		return -1;
+	if (i2c1_write(BMP_SLAVE_ADDR, BMP_INT_CTRL_ADDR, &bmp_intctrl, 1, 1) != 0)
+                return -1;
 	return 0;
 }
 
@@ -160,4 +163,13 @@ void print_bmp390(float temp, float press) {
 	usart2_transmitstr("Pressure (Pa): ");
 	usart2_transmitfloat(press, 2);
 	usart2_transmitstr("\r\n");
+}
+
+// BMP390 Data Ready External Interrupt
+volatile uint8_t bmp_data_ready = 0;
+void EXTI9_5_IRQHandler(void) {
+	if (EXTI_PR1 & (1 << 6)) {   // Check if interrupt flag is raised
+		EXTI_PR1 = (1 << 6); // Clear interrupt flag bit
+		bmp_data_ready = 1;  // Data is ready signal
+	}
 }

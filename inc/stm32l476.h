@@ -9,9 +9,11 @@
 #define RCC_CCIPR     (*(volatile uint32_t*)0x40021088) // peripheral independent clock source select
 #define RCC_APB1RSTR1 (*(volatile uint32_t*)0x40021038) // clock reset 
 #define RCC_CFGR      (*(volatile uint32_t*)0x40021008) // clock configuration
+#define RCC_APB2ENR   (*(volatile uint32_t*)0x40021060) 
 
 #define TIM2_CR1      (*(volatile uint32_t*)0x40000000) // TIM2 control register 
 #define TIM2_SMCR     (*(volatile uint32_t*)0x40000008) // TIM2 slave mode control  
+#define TIM2_DIER     (*(volatile uint32_t*)0x4000000C) // TIM2 DMA/Interrupt enable
 #define TIM2_SR       (*(volatile uint32_t*)0x40000010) // TIM2 status register (flags)
 #define TIM2_EGR      (*(volatile uint32_t*)0x40000014) // TIM2 event generation
 #define TIM2_CNT      (*(volatile uint32_t*)0x40000024) // TIM2 slave mode control
@@ -56,5 +58,12 @@
 #define USART3_ICR    (*(volatile uint32_t*)0x40004820) // USART3 flag clear register
 #define USART3_RDR    (*(volatile uint32_t*)0x40004824) // USART3 receive data register
 #define USART3_TDR    (*(volatile uint32_t*)0x40004828) // USART3 transmit data register
+
+#define SYSCFG_EXTICR2 (*(volatile uint32_t*)0x4001000C)  
+
+#define EXTI_IMR1     (*(volatile uint32_t*)0x40010400)
+#define EXTI_RTSR1    (*(volatile uint32_t*)0x40010408)
+#define EXTI_FTSR1    (*(volatile uint32_t*)0x4001040C)
+#define EXTI_PR1      (*(volatile uint32_t*)0x40010414)
 
 #endif

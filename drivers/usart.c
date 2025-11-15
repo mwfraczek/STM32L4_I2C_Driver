@@ -22,13 +22,14 @@ void usart3_init(void) {
         USART3_CR1 &= ~(1 << 28); // M1 word length (8-bit word length)
         USART3_CR2 &= ~(3 << 12); // STOP bits (n = 0)
         USART3_BRR  = 0x0683;     // Baud rate = 9600 (fCK / baud) 0x0683
-        USART3_CR1 |=  (1 << 2);  // Receiver enable (RE)
+	USART3_CR1 |=  (1 << 5);  // Enable RXNE interrupt
+	USART3_CR1 |=  (1 << 2);  // Receiver enable (RE)
         USART3_CR1 |=  (1 << 0);  // USART enable (UE)
 }
 
 // General TX Function
 void usart2_transmit(uint8_t data) {
-	while (!(USART2_ISR & (1 << 7))); // Wait for empty transmit data register (TXE)
+	while (!(USART2_ISR & (1 << 7))); 
 	USART2_TDR = data;
 }
 
@@ -37,7 +38,7 @@ void usart2_transmitint(int value) {
 	char buf[12];  
 	size_t i = 0;
 
-	// Handle 0 explicitly
+	// Handle '0' values
 	if (value == 0) {
 		usart2_transmit('0');
 		return;
@@ -72,7 +73,7 @@ void usart2_transmitfloat(float value, int decimals) {
 	int whole = (int)value;
 	float frac_part = value - (float)whole;
 
-	// scale fractional part
+	// Scale fractional part
 	for (int i = 0; i < decimals; i++) {
 		frac_part *= 10.0f;
 	}
@@ -81,7 +82,7 @@ void usart2_transmitfloat(float value, int decimals) {
 	usart2_transmitint(whole);
 	usart2_transmit('.');
 
-	// ensure leading zeros in fractional part
+	// Ensure leading zeros in fractional part
 	int div = 1;
 	for (int i = 1; i < decimals; i++)
 		div *= 10;
